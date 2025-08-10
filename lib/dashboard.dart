@@ -634,7 +634,7 @@ class GradientPillButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF0072FF), Color(0xFF00C6FF)],
@@ -658,7 +658,7 @@ class GradientPillButton extends StatelessWidget {
           text,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
           textAlign: TextAlign.center,
@@ -667,3 +667,4 @@ class GradientPillButton extends StatelessWidget {
     );
   }
 }
+
