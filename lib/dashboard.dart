@@ -474,7 +474,7 @@ class DashboardStats extends StatelessWidget {
                   ),
                   const Spacer(),
                   GradientPillButton(
-  text: "View Camera List",
+  text: "View List Camera",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) => CameraLis(),
