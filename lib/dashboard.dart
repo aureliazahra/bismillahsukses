@@ -477,7 +477,7 @@ class DashboardStats extends StatelessWidget {
   text: "View List Camera",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
-      builder: (context) => CameraLis(),
+      builder: (context) => CameraList(),
     ));
   },
 ),
