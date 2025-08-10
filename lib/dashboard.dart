@@ -421,6 +421,7 @@ class DashboardStats extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
+                  const SizedBox(height: 20), // jarak lebih besar~
                   Align(
                     alignment: Alignment.center,
                     child:GradientPillButton(
@@ -438,61 +439,104 @@ class DashboardStats extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           // Right Card
-          Expanded(
-            flex: 1,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF1B1A40), Color(0xFF12102A)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          // Right Card (Updated Style)
+Expanded(
+  flex: 1,
+  child: Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xFF0D1B3A), Color(0xFF091225)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.25),
+          blurRadius: 12,
+          offset: const Offset(0, 6),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "Total Active Cameras",
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+              child: Text(
+                activeCameras.toString(),
+                style: const TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Total Active Cameras",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _gradientNumber(activeCameras.toString(), fontSize: 42),
-                      Text(
-                        "/$totalCameras",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Align(
-                    alignment: Alignment.center,
-                    child:
-                    GradientPillButton(
-  text: "View List Camera",
-  onPressed: () {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => CameraListPage(),
-    ));
-  },
-),
-),
-                ],
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "/$totalCameras",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: onViewCameras,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blueAccent.withOpacity(0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: const Text(
+              "View Cameras List",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ],
+        ),
+      ],
+    ),
+  ),
+),
+
       ),
     );
   }
@@ -618,7 +662,7 @@ class NotificationsPage extends StatelessWidget {
   }
 }
 
-
+// =================== Gradient Button ===================
 class GradientPillButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
