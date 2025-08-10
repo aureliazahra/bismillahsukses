@@ -421,7 +421,9 @@ class DashboardStats extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  GradientPillButton(
+                  Align(
+                    alignment: Alignment.center,
+                    child:GradientPillButton(
   text: "Manage Requests",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
@@ -429,6 +431,7 @@ class DashboardStats extends StatelessWidget {
     ));
   },
 ),
+                  ),
                 ],
               ),
             ),
@@ -473,13 +476,17 @@ class DashboardStats extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  GradientPillButton(
+                  Align(
+                    alignment: Alignment.center,
+                    child:
+                    GradientPillButton(
   text: "View List Camera",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
-      builder: (context) => CameraList(),
+      builder: (context) => CameraListPage(),
     ));
   },
+),
 ),
                 ],
               ),
