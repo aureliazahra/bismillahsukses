@@ -29,7 +29,9 @@ class _MainLayoutState extends State<MainLayout> {
             menuItems: widget.menuItems,
             onMenuTap: (index) {
               setState(() => selectedPage = index);
-            }, onLogout: () {  },
+            }, onLogout: () {
+              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+            },
           ),
           Expanded(
             child: Padding(
