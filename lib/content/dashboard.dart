@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lolos/cctvmanagement.dart';
+import 'package:lolos/content/cctvmanagement.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -11,10 +11,9 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int selectedPage = 0;
   String searchQuery = "";
-
-  // Data dinamis
+  // Jumlah permintaan yang belum diproses
   int unprocessedRequests = 6;
-  int onProgress = 4;
+  int onProgress = 4; 
   int activeCameras = 18;
   int totalCameras = 20;
   int matchedToday = 3;
@@ -44,35 +43,35 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: const Color(0xFF0B1220),
       body: Row(
         children: [
-          // ===================== SIDEBAR =====================
-          Container(
-            width: 250,
-            color: const Color(0xFF111A2E),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: Image.asset(
-                    'assets/images/obserra.png',
-                    width: 140,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                for (int i = 0; i < menuItems.length; i++)
-                  _buildSidebarItem(
-                    _getIconForMenu(menuItems[i]),
-                    menuItems[i],
-                    isActive: selectedPage == i,
-                    onTap: () {
-                      setState(() => selectedPage = i);
-                    },
-                  ),
-                const Spacer(),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
+          // // ===================== SIDEBAR =====================
+          // Container(
+          //   width: 250,
+          //   color: const Color(0xFF111A2E),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       const SizedBox(height: 20),
+          //       Center(
+          //         child: Image.asset(
+          //           'assets/images/obserra.png',
+          //           width: 140,
+          //         ),
+          //       ),
+          //       const SizedBox(height: 30),
+          //       for (int i = 0; i < menuItems.length; i++)
+          //         _buildSidebarItem(
+          //           _getIconForMenu(menuItems[i]),
+          //           menuItems[i],
+          //           isActive: selectedPage == i,
+          //           onTap: () {
+          //             setState(() => selectedPage = i);
+          //           },
+          //         ),
+          //       const Spacer(),
+          //       const SizedBox(height: 20),
+          //     ],
+          //   ),
+          // ),
 
           // ===================== MAIN CONTENT =====================
           Expanded(
@@ -181,7 +180,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     onManageRequests: () =>
                         _navigateTo(const ManageRequestsPage()),
                     onViewCameras: () =>
-                        _navigateTo(const CctvManagement()),
+                        _navigateTo(const CCTVManagementPage()),
                   ),
 
                   const SizedBox(height: 20),

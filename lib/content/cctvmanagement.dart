@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CctvManagement extends StatefulWidget {
-  const CctvManagement({super.key});
+class CCTVManagementPage extends StatefulWidget {
+  const CCTVManagementPage({super.key});
 
   @override
-  State<CctvManagement> createState() => _CctvManagementState();
+  State<CCTVManagementPage> createState() => _CCTVManagementPageState();
 }
 
-class _CctvManagementState extends State<CctvManagement> {
+class _CCTVManagementPageState extends State<CCTVManagementPage> {
   String selectedFilter = "All";
 
   List<Map<String, String>> cameraData = [];
@@ -141,9 +141,9 @@ class _CctvManagementState extends State<CctvManagement> {
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
                       headingRowColor:
-                          MaterialStateProperty.all(Colors.transparent),
+                          WidgetStateProperty.all(Colors.transparent),
                       dataRowColor:
-                          MaterialStateProperty.all(Colors.transparent),
+                          WidgetStateProperty.all(Colors.transparent),
                       columnSpacing: 40,
                       columns: const [
                         DataColumn(
