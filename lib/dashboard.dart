@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lolos/viewcameralist.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -180,7 +181,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     onManageRequests: () =>
                         _navigateTo(const ManageRequestsPage()),
                     onViewCameras: () =>
-                        _navigateTo(const CameraListPage()),
+                        _navigateTo(const CctvManagement()),
                   ),
 
                   const SizedBox(height: 20),

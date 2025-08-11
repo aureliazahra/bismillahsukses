@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CameraListPage extends StatefulWidget {
-  const CameraListPage({super.key});
+class CctvManagement extends StatefulWidget {
+  const CctvManagement({super.key});
 
   @override
-  State<CameraListPage> createState() => _CameraListPageState();
+  State<CctvManagement> createState() => _CctvManagementState();
 }
 
-class _CameraListPageState extends State<CameraListPage> {
+class _CctvManagementState extends State<CctvManagement> {
   List<Map<String, String>> cameraData = [];
 
   @override
