@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lolos/viewcameralist.dart';
+import 'package:lolos/cctvmanagement.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
