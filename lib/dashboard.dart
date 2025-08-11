@@ -11,10 +11,9 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int selectedPage = 0;
   String searchQuery = "";
-
-  // Data dinamis
+  // Jumlah permintaan yang belum diproses
   int unprocessedRequests = 6;
-  int onProgress = 4;
+  int onProgress = 4; 
   int activeCameras = 18;
   int totalCameras = 20;
   int matchedToday = 3;
