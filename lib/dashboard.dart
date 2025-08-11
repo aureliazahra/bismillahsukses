@@ -630,16 +630,7 @@ class ManageRequestsPage extends StatelessWidget {
   }
 }
 
-class CameraListPage extends StatelessWidget {
-  const CameraListPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Camera List")),
-      body: const Center(child: Text("Camera List Page")),
-    );
-  }
-}
+
 
 class DetectionLogsPage extends StatelessWidget {
   const DetectionLogsPage({super.key});
