@@ -8,298 +8,206 @@ class CctvManagement extends StatefulWidget {
 }
 
 class _CctvManagementState extends State<CctvManagement> {
-  List<Map<String, String>> cctvData = [
-    {
-      "id": "CAM-001",
-      "location": "Gate A",
-      "status": "Active",
-      "lastUpdated": "Jul 23, 2025 - 14:02"
-    },
-    {
-      "id": "CAM-002",
-      "location": "Gate B",
-      "status": "Active",
-      "lastUpdated": "Jul 23, 2025 - 14:03"
-    },
-    {
-      "id": "CAM-003",
-      "location": "Gate C",
-      "status": "Offline",
-      "lastUpdated": "Jul 23, 2025 - 14:05"
-    },
-    {
-      "id": "CAM-004",
-      "location": "Gate D",
-      "status": "Active",
-      "lastUpdated": "Jul 23, 2025 - 14:06"
-    },
-    {
-      "id": "CAM-005",
-      "location": "Gate E",
-      "status": "Active",
-      "lastUpdated": "Jul 23, 2025 - 14:09"
-    },
-    {
-      "id": "CAM-006",
-      "location": "Gate F",
-      "status": "Offline",
-      "lastUpdated": "Jul 23, 2025 - 14:10"
-    },
-  ];
+  String selectedFilter = "All";
 
-  String filter = "All";
+  List<Map<String, String>> cameraData = [];
 
   @override
-  Widget build(BuildContext context) {
-    List<Map<String, String>> filteredData = filter == "All"
-        ? cctvData
-        : cctvData.where((cam) => cam["status"] == filter).toList();
-
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B1220),
-      body: Row(
-        children: [
-          // ===================== SIDEBAR =====================
-          Container(
-            width: 250,
-            color: const Color(0xFF111A2E),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 30),
-                Center(
-                  child: Image.asset(
-                    "assets/logo_placeholder.png", // Ganti dengan path logo placeholder
-                    width: 150,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                _buildSidebarItem(Icons.dashboard, "Dashboard"),
-                _buildSidebarItem(Icons.videocam, "CCTV Management",
-                    isSelected: true),
-                _buildSidebarItem(Icons.live_tv, "Real-Time Footage"),
-                _buildSidebarItem(Icons.file_copy, "Reports from AI"),
-                const Spacer(),
-                _buildSidebarItem(Icons.admin_panel_settings, "Admin Management"),
-                _buildSidebarItem(Icons.settings, "Settings"),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-
-          // ===================== MAIN CONTENT =====================
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Top bar with search & bell icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child: TextField(
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            hintText: "Search",
-                            hintStyle:
-                                TextStyle(color: Colors.white.withOpacity(0.5)),
-                            prefixIcon:
-                                const Icon(Icons.search, color: Colors.white),
-                            filled: true,
-                            fillColor: const Color(0xFF1B2436),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.notifications,
-                            color: Colors.white),
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Title
-                  const Text(
-                    "CCTV Management",
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  const Text(
-                    "One Trace, One Hope.",
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Add New Camera Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0ABEFF),
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
-                    onPressed: () {
-                      // Action for adding camera
-                    },
-                    child: const Text(
-                      "Add New Camera",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Filter Tabs
-                  Row(
-                    children: [
-                      _buildFilterButton("All"),
-                      _buildFilterButton("Active"),
-                      _buildFilterButton("Offline"),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Table Header
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    color: const Color(0xFF1B2436),
-                    child: const Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Text("ID",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Text("Location",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text("Status",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Text("Last Updated",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Table Data
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: filteredData.length,
-                      itemBuilder: (context, index) {
-                        var cam = filteredData[index];
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                  color: Colors.white.withOpacity(0.1)),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(cam["id"]!,
-                                    style: const TextStyle(color: Colors.white)),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(cam["location"]!,
-                                    style: const TextStyle(color: Colors.white)),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  cam["status"]!,
-                                  style: TextStyle(
-                                      color: cam["status"] == "Active"
-                                          ? Colors.blue
-                                          : Colors.red),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(cam["lastUpdated"]!,
-                                    style: const TextStyle(color: Colors.white)),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    loadCameraData();
   }
 
-  Widget _buildSidebarItem(IconData icon, String title,
-      {bool isSelected = false}) {
-    return Container(
-      decoration: isSelected
-          ? BoxDecoration(
-              color: const Color(0xFF0ABEFF),
-              borderRadius: BorderRadius.circular(10),
-            )
-          : null,
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.white),
-        title: Text(
-          title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        onTap: () {},
-      ),
-    );
+  void loadCameraData() {
+    // Simulasi data awal (nanti ganti dengan API/WebSocket)
+    setState(() {
+      cameraData = [
+        {
+          "id": "CAM-001",
+          "location": "Gate A",
+          "status": "Active",
+          "lastUpdated": "Jul 29, 2025 - 14:03"
+        },
+        {
+          "id": "CAM-002",
+          "location": "Gate B",
+          "status": "Offline",
+          "lastUpdated": "Jul 29, 2025 - 14:02"
+        },
+        {
+          "id": "CAM-003",
+          "location": "Gate C",
+          "status": "Active",
+          "lastUpdated": "Jul 29, 2025 - 14:01"
+        },
+        {
+          "id": "CAM-004",
+          "location": "Gate D",
+          "status": "Offline",
+          "lastUpdated": "Jul 29, 2025 - 14:00"
+        },
+      ];
+    });
   }
 
-  Widget _buildFilterButton(String title) {
-    bool isSelected = filter == title;
+  List<Map<String, String>> get filteredData {
+    if (selectedFilter == "All") return cameraData;
+    return cameraData
+        .where((cam) => cam['status'] == selectedFilter)
+        .toList();
+  }
+
+  Widget buildFilterButton(String label) {
+    bool isSelected = selectedFilter == label;
     return GestureDetector(
       onTap: () {
         setState(() {
-          filter = title;
+          selectedFilter = label;
         });
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0ABEFF) : const Color(0xFF1B2436),
+          color: isSelected ? const Color(0xFF00C6FF) : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: const Color(0xFF00C6FF)),
         ),
         child: Text(
-          title,
-          style: const TextStyle(color: Colors.white),
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : const Color(0xFF00C6FF),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0B1220),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title & Subtitle
+            const Text(
+              "CCTV Management",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              "One Trace, One Hope.",
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Filter Buttons
+            Row(
+              children: [
+                buildFilterButton("All"),
+                const SizedBox(width: 10),
+                buildFilterButton("Active"),
+                const SizedBox(width: 10),
+                buildFilterButton("Offline"),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Table
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0F1E36), Color(0xFF081325)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      headingRowColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      dataRowColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      columnSpacing: 40,
+                      columns: const [
+                        DataColumn(
+                          label: Text("ID",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        DataColumn(
+                          label: Text("Location",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        DataColumn(
+                          label: Text("Status",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        DataColumn(
+                          label: Text("Last Updated",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                      rows: filteredData.map((cam) {
+                        final status = cam['status'] ?? '';
+                        return DataRow(
+                          cells: [
+                            DataCell(Text(
+                              cam['id'] ?? '',
+                              style: const TextStyle(color: Colors.white),
+                            )),
+                            DataCell(Text(
+                              cam['location'] ?? '',
+                              style: const TextStyle(color: Colors.white),
+                            )),
+                            DataCell(Text(
+                              status,
+                              style: TextStyle(
+                                color: status == "Active"
+                                    ? const Color(0xFF00C6FF)
+                                    : const Color(0xFFFF6B35),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                            DataCell(Text(
+                              cam['lastUpdated'] ?? '',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            )),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
