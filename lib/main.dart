@@ -4,7 +4,9 @@ import 'layout/layout.dart';
 import 'content/dashboard.dart';
 import 'content/cctvmanagement.dart';
 import 'content/realtime.dart';
-import 'content/reportuser.dart';
+import 'content/historylogs.dart';
+import 'content/missingpeople.dart';
+import 'content/settings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,28 +26,18 @@ class MyApp extends StatelessWidget {
               menuItems: const [
                 "Dashboard",
                 "CCTV Management",
-                "Real-Time Face",
-                "Reports",
-                "Admin Management",
+                "Real Time Face Detection",
+                "History Logs",
+                "Missing People",
                 "Settings",
               ],
-              pages: const [
-                DashboardPage(),
-                CCTVManagementPage(),
-                RealTimeFacePage(),
-                ReportUserPage(),
-                Center(
-                  child: Text(
-                    "Admin Management Page",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "Settings Page",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+              pages: [
+                const DashboardPage(),
+                const CCTVManagementPage(),
+                RealTimeDetectionPage(), // ganti dengan nama class yang benar
+                const HistoryLogsPage(),
+                const MissingPeoplePage(),
+                const SettingsPage(),
               ],
             ),
       },
