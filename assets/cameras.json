@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Local Webcam",
+    "source": 0,
+    "width": 640,
+    "height": 480,
+    "id": "CAM-001",
+    "status": "Active"
+  },
+  {
+    "name": "CCTV Stream 1",
+    "source": "rtsp://admin:admin@192.168.1.100:554/stream1",
+    "width": 640,
+    "height": 480,
+    "id": "CAM-002",
+    "status": "Active"
+  },
+  {
+    "name": "CCTV Stream 2",
+    "source": "http://192.168.1.101:8080/video",
+    "width": 640,
+    "height": 480,
+    "id": "CAM-003",
+    "status": "Active"
+  }
+]
