@@ -1,104 +1,195 @@
 import 'package:flutter/material.dart';
 
-class HistoryLogsPage extends StatelessWidget {
+class HistoryLogsPage extends StatefulWidget {
   const HistoryLogsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Sample data logs (seperti gambar)
-    final logs = [
-      ["2025-08-12", "12:48:43", "IP Camera Inside", "unknown", 0.00],
-      ["2025-08-12", "12:52:07", "IP Camera Outside", "unknown", 0.12],
-      ["2025-08-12", "12:57:25", "IP Camera Inside", "Siti", 0.87],
-      ["2025-08-12", "12:59:11", "IP Camera Gate", "unknown", 0.03],
-      ["2025-08-12", "13:02:18", "IP Camera Outside", "Budi", 0.91],
-      ["2025-08-12", "13:05:46", "IP Camera Inside", "unknown", 0.05],
-      ["2025-08-12", "13:11:32", "IP Camera Gate", "unknown", 0.78],
-      ["2025-08-12", "13:16:57", "IP Camera Outside", "Rudi", 0.95],
-    ];
+  State<HistoryLogsPage> createState() => _HistoryLogsPageState();
+}
 
+class _HistoryLogsPageState extends State<HistoryLogsPage> {
+  List<Map<String, dynamic>> logs = [
+    {
+      "date": "2025-08-12",
+      "time": "12:48:43",
+      "camera": "IP Camera Inside",
+      "person": "unknown",
+      "score": 0.00
+    },
+    {
+      "date": "2025-08-12",
+      "time": "12:52:07",
+      "camera": "IP Camera Outside",
+      "person": "unknown",
+      "score": 0.12
+    },
+    {
+      "date": "2025-08-12",
+      "time": "12:57:25",
+      "camera": "IP Camera Inside",
+      "person": "Siti",
+      "score": 0.87
+    },
+    {
+      "date": "2025-08-12",
+      "time": "12:59:11",
+      "camera": "IP Camera Gate",
+      "person": "unknown",
+      "score": 0.03
+    },
+    {
+      "date": "2025-08-12",
+      "time": "13:02:18",
+      "camera": "IP Camera Outside",
+      "person": "Budi",
+      "score": 0.91
+    },
+    {
+      "date": "2025-08-12",
+      "time": "13:05:46",
+      "camera": "IP Camera Inside",
+      "person": "unknown",
+      "score": 0.05
+    },
+    {
+      "date": "2025-08-12",
+      "time": "13:11:32",
+      "camera": "IP Camera Gate",
+      "person": "unknown",
+      "score": 0.78
+    },
+    {
+      "date": "2025-08-12",
+      "time": "13:16:57",
+      "camera": "IP Camera Outside",
+      "person": "Rudi",
+      "score": 0.95
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0B1220),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // Search bar
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF4AB1EB), Color(0xFF2D6AA6)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Founded Logs",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    "Detected missing people on available cameras will automatically recorded as logs here",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            // Table Header
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1C1C3C),
+                color: const Color(0xFF111A2E),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Row(
                 children: [
-                  Expanded(flex: 2, child: Text("Date", style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500))),
-                  Expanded(flex: 2, child: Text("Time", style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500))),
-                  Expanded(flex: 3, child: Text("Camera", style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500))),
-                  Expanded(flex: 3, child: Text("Person Name", style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500))),
-                  Expanded(flex: 2, child: Text("Match Score", style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500))),
+                  Icon(Icons.search, color: Colors.white70),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Search",
+                        hintStyle: TextStyle(color: Colors.white54),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
-            // Table Rows
+            // Title
+            const Text(
+              "Founded Logs",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              "Detected missing people on available cameras will automatically recorded as logs here",
+              style: TextStyle(color: Colors.white54, fontSize: 14),
+            ),
+            const SizedBox(height: 20),
+
+            // Table header
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF111A2E),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: const [
+                  Expanded(
+                      flex: 2,
+                      child: Text("Date",
+                          style: TextStyle(color: Colors.white))),
+                  Expanded(
+                      flex: 2,
+                      child: Text("Time",
+                          style: TextStyle(color: Colors.white))),
+                  Expanded(
+                      flex: 3,
+                      child: Text("Camera",
+                          style: TextStyle(color: Colors.white))),
+                  Expanded(
+                      flex: 2,
+                      child: Text("Person Name",
+                          style: TextStyle(color: Colors.white))),
+                  Expanded(
+                      flex: 2,
+                      child: Text("Match Score",
+                          style: TextStyle(color: Colors.white))),
+                ],
+              ),
+            ),
+
+            // Table rows
             Expanded(
               child: ListView.builder(
                 itemCount: logs.length,
                 itemBuilder: (context, index) {
                   final log = logs[index];
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1C1C3C).withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFF0E1A36),
+                      border: Border(
+                        bottom: BorderSide(
+                            color: Colors.white.withOpacity(0.05), width: 1),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Expanded(flex: 2, child: Text(log[0].toString(), style: const TextStyle(color: Colors.white, fontSize: 13))),
-                        Expanded(flex: 2, child: Text(log[1].toString(), style: const TextStyle(color: Colors.white, fontSize: 13))),
-                        Expanded(flex: 3, child: Text(log[2].toString(), style: const TextStyle(color: Colors.white, fontSize: 13))),
-                        Expanded(flex: 3, child: Text(log[3].toString(), style: const TextStyle(color: Colors.white, fontSize: 13))),
-                        Expanded(flex: 2, child: Text((log[4] as double).toStringAsFixed(2), style: const TextStyle(color: Colors.white, fontSize: 13))),
+                        Expanded(
+                            flex: 2,
+                            child: Text(log["date"],
+                                style: const TextStyle(color: Colors.white))),
+                        Expanded(
+                            flex: 2,
+                            child: Text(log["time"],
+                                style: const TextStyle(color: Colors.white))),
+                        Expanded(
+                            flex: 3,
+                            child: Text(log["camera"],
+                                style: const TextStyle(color: Colors.white))),
+                        Expanded(
+                            flex: 2,
+                            child: Text(log["person"],
+                                style: const TextStyle(color: Colors.white))),
+                        Expanded(
+                            flex: 2,
+                            child: Text(log["score"].toStringAsFixed(2),
+                                style: const TextStyle(color: Colors.white))),
                       ],
                     ),
                   );
