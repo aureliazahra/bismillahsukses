@@ -1,11 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class RealTimeDetectionPage extends StatefulWidget {
   const RealTimeDetectionPage({super.key});
@@ -15,360 +12,89 @@ class RealTimeDetectionPage extends StatefulWidget {
 }
 
 class _RealTimeDetectionPageState extends State<RealTimeDetectionPage> {
-  List<CameraConfig> cameras = [];
-  List<CameraController?> cameraControllers = [];
-  List<VlcPlayerController?> vlcControllers = [];
+  final String baseUrl = "http://localhost:8000"; // Python backend URL
   bool isLoading = true;
-  String? errorMessage;
+  List<_CameraInfo> cameras = [];
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
-    _loadCameraConfiguration();
+    _loadCameras();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) => _loadCameras());
   }
 
   @override
   void dispose() {
-    _disposeControllers();
+    _refreshTimer?.cancel();
     super.dispose();
   }
 
-  void _disposeControllers() {
-    for (var controller in cameraControllers) {
-      controller?.dispose();
-    }
-    for (var controller in vlcControllers) {
-      controller?.dispose();
-    }
-  }
-
-  Future<void> _loadCameraConfiguration() async {
+  Future<void> _loadCameras() async {
     try {
-      setState(() {
-        isLoading = true;
-        errorMessage = null;
-      });
-
-      // Try to load from assets first
-      try {
-        final response = await http.get(Uri.parse('/assets/cameras.json'));
-        if (response.statusCode == 200) {
-          final List<dynamic> data = json.decode(response.body);
-          cameras = data.map((json) => CameraConfig.fromJson(json)).toList();
-        } else {
-          throw Exception('Failed to load cameras.json from assets');
-        }
-      } catch (e) {
-        // Fallback: try to load from local file system
-        try {
-          final directory = await getApplicationDocumentsDirectory();
-          final file = File('${directory.path}/cameras.json');
-          if (await file.exists()) {
-            final contents = await file.readAsString();
-            final List<dynamic> data = json.decode(contents);
-            cameras = data.map((json) => CameraConfig.fromJson(json)).toList();
-          } else {
-            // Create default configuration if file doesn't exist
-            cameras = _createDefaultCameraConfig();
+      // Prefer rich /api endpoints (streaming support)
+      final resp = await http.get(Uri.parse('$baseUrl/api/cameras'));
+      if (resp.statusCode == 200) {
+        final List<dynamic> data = json.decode(resp.body);
+        final list = data.map((e) => _CameraInfo.fromJson(e)).toList();
+        setState(() {
+          cameras = list;
+          isLoading = false;
+        });
+        // Ensure local cameras are started
+        for (final cam in list) {
+          if (cam.idx != null && cam.statusText == 'Active') {
+            // Start only if backend thread is stopped
+            if (cam.runtimeStatus != 'running') {
+              _startCamera(cam.idx!);
+            }
           }
-        } catch (e) {
-          // Use default configuration as fallback
-          cameras = _createDefaultCameraConfig();
         }
+        return;
       }
+    } catch (_) {}
 
-      // Initialize controllers for each camera
-      await _initializeControllers();
-
-      setState(() {
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-        errorMessage = 'Error loading camera configuration: $e';
-      });
-    }
-  }
-
-  List<CameraConfig> _createDefaultCameraConfig() {
-    return [
-      CameraConfig(
-        name: "Local Webcam",
-        source: 0,
-        width: 640,
-        height: 480,
-        id: "CAM-001",
-        status: "Active",
-      ),
-      CameraConfig(
-        name: "CCTV Stream 1",
-        source: "rtsp://admin:admin@192.168.1.100:554/stream1",
-        width: 640,
-        height: 480,
-        id: "CAM-002",
-        status: "Active",
-      ),
-      CameraConfig(
-        name: "CCTV Stream 2",
-        source: "http://192.168.1.101:8080/video",
-        width: 640,
-        height: 480,
-        id: "CAM-003",
-        status: "Active",
-      ),
-      CameraConfig(
-        name: "Backup Webcam",
-        source: 1,
-        width: 640,
-        height: 480,
-        id: "CAM-004",
-        status: "Active",
-      ),
-    ];
-  }
-
-  Future<void> _initializeControllers() async {
-    // Dispose existing controllers
-    _disposeControllers();
-    
-    cameraControllers = List.filled(cameras.length, null);
-    vlcControllers = List.filled(cameras.length, null);
-
-    for (int i = 0; i < cameras.length; i++) {
-      final camera = cameras[i];
-      
-      if (camera.source is int) {
-        // Local webcam
-        try {
-          await _initializeLocalCamera(i);
-        } catch (e) {
-          print('Failed to initialize local camera $i: $e');
-        }
-      } else if (camera.source is String) {
-        // CCTV stream
-        try {
-          await _initializeVlcController(i);
-        } catch (e) {
-          print('Failed to initialize VLC controller $i: $e');
-        }
-      }
-    }
-  }
-
-  Future<void> _initializeLocalCamera(int index) async {
+    // Fallback to simple list (no streaming). Use /cameras and build minimal tiles.
     try {
-      // Request camera permission
-      final status = await Permission.camera.request();
-      if (status.isDenied) {
-        throw Exception('Camera permission denied');
-      }
-
-      // Get available cameras
-      final cameras = await availableCameras();
-      if (cameras.isEmpty) {
-        throw Exception('No cameras available');
-      }
-
-      // Use the specified camera index or default to first camera
-      final cameraIndex = this.cameras[index].source as int;
-      final selectedCamera = cameraIndex < cameras.length 
-          ? cameras[cameraIndex] 
-          : cameras.first;
-
-      // Create and initialize controller
-      final controller = CameraController(
-        selectedCamera,
-        ResolutionPreset.medium,
-        enableAudio: false,
-      );
-
-      await controller.initialize();
-      
-      if (mounted) {
+      final resp = await http.get(Uri.parse('$baseUrl/cameras'));
+      if (resp.statusCode == 200) {
+        final List<dynamic> data = json.decode(resp.body);
         setState(() {
-          cameraControllers[index] = controller;
+          cameras = data.map((e) => _CameraInfo.fallbackFromJson(e)).toList();
+          isLoading = false;
         });
+        return;
       }
-    } catch (e) {
-      print('Error initializing local camera: $e');
-      rethrow;
-    }
+    } catch (_) {}
+
+    // If all fails, show one local webcam tile as placeholder
+    setState(() {
+      cameras = [
+        _CameraInfo(
+          id: 'CAM-LOCAL',
+          name: 'Local Webcam',
+          source: '0',
+          statusText: 'Active',
+          width: 640,
+          height: 480,
+          idx: 0,
+          runtimeStatus: 'stopped',
+        ),
+      ];
+      isLoading = false;
+    });
   }
 
-  Future<void> _initializeVlcController(int index) async {
+  Future<void> _startCamera(int idx) async {
     try {
-      final camera = cameras[index];
-      final controller = VlcPlayerController.network(
-        camera.source as String,
-        hwAcc: HwAcc.full,
-        autoPlay: true,
-        autoInitialize: true,
-      );
-
-      if (mounted) {
-        setState(() {
-          vlcControllers[index] = controller;
-        });
-      }
-    } catch (e) {
-      print('Error initializing VLC controller: $e');
-      rethrow;
-    }
+      await http.post(Uri.parse('$baseUrl/api/camera/$idx/start'));
+    } catch (_) {}
   }
 
-  Widget _buildCameraWidget(int index) {
-    final camera = cameras[index];
-    final isLocalCamera = camera.source is int;
-    final cameraController = cameraControllers[index];
-    final vlcController = vlcControllers[index];
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Stack(
-        children: [
-          // Camera feed
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.grey[800],
-            child: isLocalCamera
-                ? _buildLocalCameraFeed(cameraController)
-                : _buildCctvFeed(vlcController),
-          ),
-          
-          // Camera info overlay (bottom-left)
-          Positioned(
-            left: 8,
-            bottom: 8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                camera.name,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-          
-          // LIVE indicator (top-right)
-          Positioned(
-            top: 8,
-            right: 8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'LIVE',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          
-          // Status indicator (top-left)
-          Positioned(
-            top: 8,
-            left: 8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: camera.status == 'Active' ? Colors.green : Colors.orange,
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Text(
-                camera.status,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 8,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-
-          // Source type indicator (center-top)
-          Positioned(
-            top: 30,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  isLocalCamera ? 'Local Camera' : 'CCTV Stream',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLocalCameraFeed(CameraController? controller) {
-    if (controller == null || !controller.value.isInitialized) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Colors.white),
-            SizedBox(height: 8),
-            Text(
-              'Initializing camera...',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return CameraPreview(controller);
-  }
-
-  Widget _buildCctvFeed(VlcPlayerController? controller) {
-    if (controller == null) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Colors.white),
-            SizedBox(height: 8),
-            Text(
-              'Connecting to stream...',
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return VlcPlayer(
-      controller: controller,
-      aspectRatio: 16 / 9,
-    );
+  Future<void> _stopCamera(int idx) async {
+    try {
+      await http.post(Uri.parse('$baseUrl/api/camera/$idx/stop'));
+    } catch (_) {}
   }
 
   @override
@@ -380,7 +106,6 @@ class _RealTimeDetectionPageState extends State<RealTimeDetectionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -392,10 +117,10 @@ class _RealTimeDetectionPageState extends State<RealTimeDetectionPage> {
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Real-Time\nDetection",
                     style: TextStyle(
                       color: Colors.white,
@@ -404,199 +129,251 @@ class _RealTimeDetectionPageState extends State<RealTimeDetectionPage> {
                       height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    "Live camera feeds with real-time monitoring",
+                  SizedBox(height: 6),
+                  Text(
+                    "Available cameras with real-time face detection",
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _loadCameraConfiguration,
-                        icon: const Icon(Icons.refresh),
-                        label: const Text('Refresh'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF2D6AA6),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton.icon(
-                        onPressed: () => _showConfigurationDialog(),
-                        icon: const Icon(Icons.settings),
-                        label: const Text('Configure'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF2D6AA6),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton.icon(
-                        onPressed: () => _showAddCameraDialog(),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Add Camera'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF2D6AA6),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            // Error message
-            if (errorMessage != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: Colors.red[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red),
-                ),
-                child: Text(
-                  errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-
-            // Camera grid
-            if (isLoading)
-              const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              )
-            else if (cameras.isEmpty)
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    'No cameras configured',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-              )
-            else
-              Expanded(
-                child: GridView.builder(
-                  itemCount: cameras.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 4 / 3,
-                  ),
-                  itemBuilder: (context, index) {
-                    return _buildCameraWidget(index);
-                  },
-                ),
-              ),
+            Expanded(
+              child: isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                      ),
+                    )
+                  : GridView.builder(
+                      itemCount: cameras.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
+                      itemBuilder: (context, index) {
+                        final cam = cameras[index];
+                        return _CameraTile(
+                          baseUrl: baseUrl,
+                          camera: cam,
+                          onStart: cam.idx != null ? () => _startCamera(cam.idx!) : null,
+                          onStop: cam.idx != null ? () => _stopCamera(cam.idx!) : null,
+                        );
+                      },
+                    ),
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  void _showConfigurationDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Camera Configuration'),
-        content: const Text(
-          'To configure cameras, edit the cameras.json file in your assets folder.\n\n'
-          'The file should contain an array of camera objects with the following structure:\n\n'
-          '{\n'
-          '  "name": "Camera Name",\n'
-          '  "source": 0,  // Integer for local webcam, URL string for CCTV\n'
-          '  "width": 640,\n'
-          '  "height": 480,\n'
-          '  "id": "CAM-001",\n'
-          '  "status": "Active"\n'
-          '}\n\n'
-          'For local webcams, use integer indices (0, 1, 2, etc.).\n'
-          'For CCTV streams, use RTSP/HTTP URLs.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+class _CameraInfo {
+  final String id;
+  final String name;
+  final String? statusText; // Active/Offline
+  final String? source; // stringified to be safe
+  final int? width;
+  final int? height;
+  final int? idx; // backend index for /api endpoints
+  final String? runtimeStatus; // running/stopped
+
+  _CameraInfo({
+    required this.id,
+    required this.name,
+    this.statusText,
+    this.source,
+    this.width,
+    this.height,
+    this.idx,
+    this.runtimeStatus,
+  });
+
+  factory _CameraInfo.fromJson(Map<String, dynamic> json) {
+    return _CameraInfo(
+      id: (json['id'] ?? 'CAM-${DateTime.now().millisecondsSinceEpoch}').toString(),
+      name: (json['name'] ?? 'Camera').toString(),
+      statusText: (json['status'] ?? 'Active').toString(),
+      source: json['source']?.toString(),
+      width: json['width'] is int ? json['width'] as int : int.tryParse('${json['width']}'),
+      height: json['height'] is int ? json['height'] as int : int.tryParse('${json['height']}'),
+      idx: json['_idx'] is int ? json['_idx'] as int : int.tryParse('${json['_idx']}'),
+      runtimeStatus: json['_status']?.toString(),
     );
   }
 
-  void _showAddCameraDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add New Camera'),
-        content: const Text(
-          'To add a new camera:\n\n'
-          '1. Edit the cameras.json file in your assets folder\n'
-          '2. Add a new camera configuration\n'
-          '3. Click the Refresh button\n\n'
-          'Example configurations:\n\n'
-          'Local Webcam:\n'
-          '{"name": "New Camera", "source": 2, "id": "CAM-005"}\n\n'
-          'CCTV Stream:\n'
-          '{"name": "IP Camera", "source": "rtsp://user:pass@ip:port/stream", "id": "CAM-006"}',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
+  factory _CameraInfo.fallbackFromJson(Map<String, dynamic> json) {
+    return _CameraInfo(
+      id: (json['id'] ?? 'CAM-${DateTime.now().millisecondsSinceEpoch}').toString(),
+      name: (json['name'] ?? 'Camera').toString(),
+      statusText: (json['status'] ?? 'Active').toString(),
+      source: json['source']?.toString(),
+      width: json['width'] is int ? json['width'] as int : int.tryParse('${json['width']}'),
+      height: json['height'] is int ? json['height'] as int : int.tryParse('${json['height']}'),
+      idx: null,
+      runtimeStatus: null,
     );
   }
 }
 
-class CameraConfig {
-  final String name;
-  final dynamic source; // int for local webcam, String for URL
-  final int width;
-  final int height;
-  final String id;
-  final String status;
+class _CameraTile extends StatefulWidget {
+  final String baseUrl;
+  final _CameraInfo camera;
+  final VoidCallback? onStart;
+  final VoidCallback? onStop;
 
-  CameraConfig({
-    required this.name,
-    required this.source,
-    required this.width,
-    required this.height,
-    required this.id,
-    required this.status,
+  const _CameraTile({
+    super.key,
+    required this.baseUrl,
+    required this.camera,
+    this.onStart,
+    this.onStop,
   });
 
-  factory CameraConfig.fromJson(Map<String, dynamic> json) {
-    return CameraConfig(
-      name: json['name'] ?? 'Unknown Camera',
-      source: json['source'],
-      width: json['width'] ?? 640,
-      height: json['height'] ?? 480,
-      id: json['id'] ?? 'CAM-000',
-      status: json['status'] ?? 'Unknown',
-    );
+  @override
+  State<_CameraTile> createState() => _CameraTileState();
+}
+
+class _CameraTileState extends State<_CameraTile> {
+  Uint8List? _frameBytes;
+  Timer? _timer;
+  bool _starting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _maybeAutoStart();
+    _beginPolling();
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'source': source,
-      'width': width,
-      'height': height,
-      'id': id,
-      'status': status,
-    };
+  void _maybeAutoStart() {
+    if (widget.camera.idx != null && widget.camera.runtimeStatus != 'running' && (widget.camera.statusText == 'Active')) {
+      _starting = true;
+      widget.onStart?.call();
+      Future.delayed(const Duration(milliseconds: 600), () {
+        if (mounted) setState(() => _starting = false);
+      });
+    }
+  }
+
+  void _beginPolling() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(milliseconds: 300), (_) => _fetchFrame());
+  }
+
+  Future<void> _fetchFrame() async {
+    if (!mounted) return;
+    // Prefer /api snapshot when idx available
+    final int? idx = widget.camera.idx;
+    String? url;
+    if (idx != null) {
+      url = '${widget.baseUrl}/api/camera/$idx/snapshot?t=${DateTime.now().millisecondsSinceEpoch}';
+    }
+    if (url == null) {
+      // No streaming available from simple_api; skip fetching
+      return;
+    }
+    try {
+      final resp = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 2));
+      if (resp.statusCode == 200 && resp.bodyBytes.isNotEmpty) {
+        setState(() {
+          _frameBytes = resp.bodyBytes;
+        });
+      }
+    } catch (_) {}
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cam = widget.camera;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        children: [
+          Container(color: const Color(0xFF2B2F3B)),
+          if (_frameBytes != null)
+            Positioned.fill(
+              child: Image.memory(
+                _frameBytes!,
+                gaplessPlayback: true,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.low,
+              ),
+            )
+          else
+            const Positioned.fill(
+              child: Center(
+                child: Icon(Icons.videocam, color: Colors.white38, size: 40),
+              ),
+            ),
+
+          // Gradient overlay bottom
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [Color(0xAA000000), Color(0x00000000)],
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: (cam.statusText == 'Active') ? const Color(0xFF39D98A) : const Color(0xFFFFB020),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      cam.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  if (cam.idx != null) ...[
+                    IconButton(
+                      onPressed: widget.onStart,
+                      icon: Icon(Icons.play_arrow, size: 18, color: _starting ? Colors.white30 : Colors.white70),
+                      tooltip: 'Start',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 6),
+                    IconButton(
+                      onPressed: widget.onStop,
+                      icon: const Icon(Icons.stop, size: 18, color: Colors.white70),
+                      tooltip: 'Stop',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

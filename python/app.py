@@ -51,7 +51,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-ROOT = BASE_DIR
+ROOT = os.path.dirname(os.path.abspath(__file__))  # python/ directory
 CAMERAS_PATH = os.path.join(ROOT, "cameras.json")
 LOGS_DIR = os.path.join(ROOT, "logs")
 LOG_CSV = os.path.join(LOGS_DIR, "log.csv")
@@ -209,6 +209,46 @@ def api_delete_camera(idx: int):
 
 
 # ---------- Camera control ----------
+@app.get("/api/camera/test")
+def api_test_cameras():
+    """Test available cameras on the system"""
+    available_cameras = []
+    
+    for i in range(5):  # Test first 5 camera indices
+        try:
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                ret, frame = cap.read()
+                if ret and frame is not None:
+                    height, width = frame.shape[:2]
+                    available_cameras.append({
+                        "index": i,
+                        "resolution": f"{width}x{height}",
+                        "status": "available"
+                    })
+                else:
+                    available_cameras.append({
+                        "index": i,
+                        "status": "opened_but_no_frame"
+                    })
+            else:
+                available_cameras.append({
+                    "index": i,
+                    "status": "not_available"
+                })
+            cap.release()
+        except Exception as e:
+            available_cameras.append({
+                "index": i,
+                "status": "error",
+                "error": str(e)
+            })
+    
+    return {
+        "available_cameras": available_cameras,
+        "total_tested": len(available_cameras)
+    }
+
 @app.post("/api/camera/{idx}/start")
 def api_start_camera(idx: int):
     cams = read_cameras()
@@ -365,16 +405,29 @@ def api_camera_snapshot(idx: int):
             cap = cv2.VideoCapture(int(source))
         else:
             cap = cv2.VideoCapture(str(source))
+        
+        # Check if camera opened successfully
+        if not cap.isOpened():
+            raise HTTPException(503, f"cannot open camera source: {source}")
+        
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(cfg.get("width", 480)))
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, int(cfg.get("height", 320)))
+        
+        # Try to read frame with timeout
         ok, frame = cap.read()
         if not ok or frame is None:
             raise HTTPException(503, "no frame from capture")
+        
         buf = _encode_jpeg(frame)
         if not buf:
             raise HTTPException(500, "imencode failed")
         _LAST_JPEG[idx] = buf
         return StreamingResponse(io.BytesIO(buf), media_type="image/jpeg")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Camera snapshot error: {e}")
+        raise HTTPException(503, f"camera error: {str(e)}")
     finally:
         try:
             if cap:
