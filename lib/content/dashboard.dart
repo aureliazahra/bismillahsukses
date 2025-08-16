@@ -163,53 +163,47 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   // === MATCHES FACE DETECTED ===
                   Container(
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF163B69), Color(0xFF0B1220)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.blueAccent.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Column(
+  margin: const EdgeInsets.all(16),
+  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+  decoration: BoxDecoration(
+    color: const Color(0xFF1A1B3A),
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
                 "Face Recognition Summary",
                 style: TextStyle(
-                  color: Colors.white70,
+                  color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildSummaryItem(
-  detectionsToday.toString(),
-  "Detections\nToday",
-),
-_buildSummaryItem(
-  possibleMatches.toString(),
-  "Possible\nMatches",
-),
-_buildSummaryItem(
-  confirmedMissing.toString(),
-  "Confirmed\nMissing\nPerson",
-),
-
-                ],
-              ),
+  
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildSummaryStat(
+        value: detectionsToday.toString(),
+        label: "Detections\nToday",
+      ),
+      _buildSummaryStat(
+        value: possibleMatches.toString(),
+        label: "Possible\nMatches",
+      ),
+      _buildSummaryStat(
+        value: confirmedMissing.toString(),
+        label: "Confirmed\nMissing\nPerson",
+      ),
+    ],
+  ),
             ],
-          ),
-        ),
+),
+                  ),
+
                 ],
               ),
             ),
@@ -401,7 +395,7 @@ class DashboardStats extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -462,7 +456,7 @@ Expanded(
         const Text(
           "Total Active Cameras",
           style: TextStyle(
-            color: Colors.white70,
+            color: Colors.white,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -700,26 +694,42 @@ class GradientPillButton extends StatelessWidget {
   }
 }
 
-Widget _buildSummaryItem(String number, String label) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
+
+Widget _buildSummaryStat({required String value, required String label}) {
+  final lines = label.split("\n"); // biar gampang bikin 2-3 baris
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.end, // teks sejajar bawah angka
     children: [
-      Text(
-        number,
-        style: const TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF4DD0E1),
+      ShaderMask(
+        shaderCallback: (bounds) => const LinearGradient(
+          colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ).createShader(bounds),
+        child: Text(
+          value,
+          style: const TextStyle(
+            fontSize: 42,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
         ),
       ),
-      const SizedBox(height: 6),
-      Text(
-        label,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.white70,
-        ),
+      const SizedBox(width: 6),
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: lines.map((line) {
+          return Text(
+            line,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.2,
+            ),
+          );
+        }).toList(),
       ),
     ],
   );
