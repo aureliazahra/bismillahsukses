@@ -16,9 +16,9 @@ class _DashboardPageState extends State<DashboardPage> {
   int onProgress = 4; 
   int activeCameras = 18;
   int totalCameras = 20;
-  int matchedToday = 3;
-  int matchedWeek = 14;
-  int matchedMonth = 25;
+  int detectionsToday = 3;
+  int possibleMatches = 14;
+  int confirmedMissing = 25;
 
   // Sidebar menu
   final List<String> menuItems = [
@@ -43,41 +43,17 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: const Color(0xFF0B1220),
       body: Row(
         children: [
-          // // ===================== SIDEBAR =====================
-          // Container(
-          //   width: 250,
-          //   color: const Color(0xFF111A2E),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       const SizedBox(height: 20),
-          //       Center(
-          //         child: Image.asset(
-          //           'assets/images/obserra.png',
-          //           width: 140,
-          //         ),
-          //       ),
-          //       const SizedBox(height: 30),
-          //       for (int i = 0; i < menuItems.length; i++)
-          //         _buildSidebarItem(
-          //           _getIconForMenu(menuItems[i]),
-          //           menuItems[i],
-          //           isActive: selectedPage == i,
-          //           onTap: () {
-          //             setState(() => selectedPage = i);
-          //           },
-          //         ),
-          //       const Spacer(),
-          //       const SizedBox(height: 20),
-          //     ],
-          //   ),
-          // ),
+          
 
           // ===================== MAIN CONTENT =====================
+          
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: Expanded(
+  child: SingleChildScrollView(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
                 children: [
                   // === TOP BAR ===
                   Row(
@@ -187,44 +163,64 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   // === MATCHES FACE DETECTED ===
                   Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0E1B35),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Matches Face Detected",
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildStatBox(
-                                matchedToday.toString(), "Matched Faces Today"),
-                            _buildStatBox(matchedWeek.toString(),
-                                "Matched Faces This Week"),
-                            _buildStatBox(matchedMonth.toString(),
-                                "Matched Faces This Month"),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        GestureDetector(
-                          onTap: () => _navigateTo(const DetectionLogsPage()),
-                          child: _buildBlueButton("View Detection Logs"),
-                        ),
-                      ],
-                    ),
-                  ),
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF163B69), Color(0xFF0B1220)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.blueAccent.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Face Recognition Summary",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildSummaryItem(
+  detectionsToday.toString(),
+  "Detections\nToday",
+),
+_buildSummaryItem(
+  possibleMatches.toString(),
+  "Possible\nMatches",
+),
+_buildSummaryItem(
+  confirmedMissing.toString(),
+  "Confirmed\nMissing\nPerson",
+),
+
                 ],
               ),
+            ],
+          ),
+        ),
+                ],
+              ),
+            ),
+          ),
             ),
           ),
         ],
       ),
     );
+    
+    
   }
 
   IconData _getIconForMenu(String title) {
@@ -704,3 +700,27 @@ class GradientPillButton extends StatelessWidget {
   }
 }
 
+Widget _buildSummaryItem(String number, String label) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        number,
+        style: const TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF4DD0E1),
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 12,
+          color: Colors.white70,
+        ),
+      ),
+    ],
+  );
+}
