@@ -401,7 +401,7 @@ class DashboardStats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "User Requests Awaiting Response",
+                    "Reported Missing Person",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -413,11 +413,11 @@ class DashboardStats extends StatelessWidget {
                     children: [
                       Expanded(
                           child: _statusBox(
-                              unprocessedRequests.toString(), "Unprocessed Requests")),
+                              unprocessedRequests.toString(), "Not yet founded")),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _statusBox(
-                              onProgress.toString(), "On Progress")),
+                              onProgress.toString(), "Founded")),
                     ],
                   ),
                   const Spacer(),
@@ -425,7 +425,7 @@ class DashboardStats extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child:GradientPillButton(
-  text: "Manage Requests",
+  text: "View Reported Missing Person",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) => ManageRequestsPage(),
