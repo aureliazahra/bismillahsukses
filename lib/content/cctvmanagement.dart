@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:lolos/content/edit.dart';
+
 
 class CCTVManagementPage extends StatefulWidget {
   const CCTVManagementPage({super.key});
@@ -52,8 +54,18 @@ void _showCameraActions(CameraData camera) {
               leading: const Icon(Icons.edit, color: Colors.white70),
               title: const Text("Edit", style: TextStyle(color: Colors.white)),
               onTap: () {
-                Navigator.pop(context);
-                _showCameraSettings(camera); // contoh: buka dialog setting
+                 Navigator.pop(context);
+  showDialog(
+    context: context,
+    builder: (context) => EditCameraDialog(
+      camera: camera,
+      onSave: (updatedCamera) {
+        setState(() {
+          cameras[cameras.indexWhere((c) => c.id == updatedCamera.id)] = updatedCamera;
+        });
+      },
+    ),
+  );
               },
             ),
             ListTile(
