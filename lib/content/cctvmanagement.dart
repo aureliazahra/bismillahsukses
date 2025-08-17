@@ -563,133 +563,151 @@ class AddCameraDialog extends StatefulWidget {
 
 class _AddCameraDialogState extends State<AddCameraDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _idController = TextEditingController();
   final _locationController = TextEditingController();
   final _sourceController = TextEditingController();
-  String _selectedStatus = "Active";
+  final _notesController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: const Color(0xFF0A0A2A),
-      title: const Text(
-        "Add New Camera",
-        style: TextStyle(color: Colors.white),
-      ),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+  bool isActive = true; // toggle status
+
+  Widget _inputField(String label, TextEditingController controller,
+      {String? hint, bool optional = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: "Camera Name",
-                labelStyle: TextStyle(color: Colors.white70),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white30),
-                ),
-              ),
-              style: const TextStyle(color: Colors.white),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter camera name';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _locationController,
-              decoration: const InputDecoration(
-                labelText: "Location",
-                labelStyle: TextStyle(color: Colors.white70),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white30),
-                ),
-              ),
-              style: const TextStyle(color: Colors.white),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter location';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _sourceController,
-              decoration: const InputDecoration(
-                labelText: "Source (0 for webcam, RTSP URL for IP camera)",
-                labelStyle: TextStyle(color: Colors.white70),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white30),
-                ),
-              ),
-              style: const TextStyle(color: Colors.white),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter source';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedStatus,
-              decoration: const InputDecoration(
-                labelText: "Status",
-                labelStyle: TextStyle(color: Colors.white70),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white30),
-                ),
-              ),
-              dropdownColor: const Color(0xFF0A0A2A),
-              style: const TextStyle(color: Colors.white),
-              items: ["Active", "Offline"].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedStatus = newValue!;
-                });
-              },
-            ),
+            Text(label,
+                style: const TextStyle(color: Colors.white70, fontSize: 14)),
+            if (optional)
+              const Text(" (Optional)",
+                  style: TextStyle(color: Colors.grey, fontSize: 12)),
           ],
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text("Cancel", style: TextStyle(color: Colors.white70)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              final camera = CameraData(
-                id: "CAM-${DateTime.now().millisecondsSinceEpoch}",
-                name: _nameController.text,
-                location: _locationController.text,
-                status: _selectedStatus,
-                lastUpdated: DateTime.now(),
-                source: _sourceController.text,
-                width: 640,
-                height: 480,
-              );
-              widget.onCameraAdded(camera);
-              Navigator.of(context).pop();
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white38),
+            filled: true,
+            fillColor: const Color(0xFF0F0F2F),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           ),
-          child: const Text("Add Camera"),
+          validator: (value) {
+            if (!optional && (value == null || value.isEmpty)) {
+              return 'Please enter $label';
+            }
+            return null;
+          },
         ),
+        const SizedBox(height: 16),
       ],
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: const Color(0xFF05051A),
+      insetPadding: const EdgeInsets.all(20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // === FORM INPUTS ===
+              _inputField("Camera ID", _idController, hint: "CAM-200"),
+              _inputField("Location", _locationController,
+                  hint: "Ruang parkir belakang"),
+              _inputField("Source", _sourceController,
+                  hint: "rtsp://192.168.1.11:554/stream200"),
+
+              // === STATUS TOGGLE ===
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Status",
+                      style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  Row(
+                    children: [
+                      Switch(
+                        value: isActive,
+                        onChanged: (val) => setState(() => isActive = val),
+                        activeColor: Colors.blue,
+                      ),
+                      Text(
+                        isActive ? "Active" : "Offline",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // === NOTES (Optional) ===
+              _inputField("Notes/Description", _notesController,
+                  optional: true, hint: "Area ini rawan pencurian"),
+
+              const SizedBox(height: 20),
+
+              // === BUTTONS ===
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        final camera = CameraData(
+                          id: _idController.text,
+                          name: _idController.text,
+                          location: _locationController.text,
+                          status: isActive ? "Active" : "Offline",
+                          lastUpdated: DateTime.now(),
+                          source: _sourceController.text,
+                          width: 640,
+                          height: 480,
+                        );
+                        widget.onCameraAdded(camera);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    child: const Text("Add New Camera",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  const SizedBox(width: 12),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("Cancel",
+                        style: TextStyle(color: Colors.white70)),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+
 
 // === CAMERA SETTINGS DIALOG ===
 class CameraSettingsDialog extends StatelessWidget {
