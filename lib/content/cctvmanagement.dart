@@ -27,6 +27,101 @@ class _CCTVManagementPageState extends State<CCTVManagementPage> {
     });
   }
 
+ // Fungsi hapus kamera
+void _deleteCamera(String id) {
+  setState(() {
+    cameras.removeWhere((camera) => camera.id == id);
+  });
+}
+
+  //actions pop up
+
+void _showCameraActions(CameraData camera) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color(0xFF0A0A2A),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.white70),
+              title: const Text("Edit", style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _showCameraSettings(camera); // contoh: buka dialog setting
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.videocam, color: Colors.white70),
+              title: const Text("Live Preview", style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: implementasi live preview
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.refresh, color: Colors.white70),
+              title: const Text("Refresh", style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _loadCameras();
+              },
+            ),
+            ListTile(
+    leading: Icon(Icons.delete, color: Colors.red),
+    title: Text("Delete", style: TextStyle(color: Colors.white)),
+    onTap: () {
+      // Sekarang jangan langsung hapus, tapi panggil confirm dialog
+      Navigator.pop(context); 
+showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Confirm Delete"),
+        content: Text("Are you sure you want to delete this download?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Tutup konfirmasi
+            },
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // TODO: logika delete download di sini
+             _deleteCamera(camera.id);
+              Navigator.of(context).pop(); // Tutup konfirmasi
+            },
+            child: Text("Delete"),
+          ),
+        ],
+      );
+    },
+  );
+    },
+  ),
+            ListTile(
+              leading: const Icon(Icons.info, color: Colors.white70),
+              title: const Text("Details", style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _showCameraSettings(camera);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
@@ -278,7 +373,6 @@ class _CCTVManagementPageState extends State<CCTVManagementPage> {
                   Expanded(flex: 3, child: _TableHeaderText("Location")),
                   Expanded(flex: 2, child: _TableHeaderText("Status")),
                   Expanded(flex: 3, child: _TableHeaderText("Last Updated")),
-                  Expanded(flex: 2, child: _TableHeaderText("Actions")),
                 ],
               ),
             ),
@@ -303,83 +397,44 @@ class _CCTVManagementPageState extends State<CCTVManagementPage> {
                               style: TextStyle(color: Colors.white70),
                             ),
                           )
-                        : ListView.builder(
-                            itemCount: filteredCameras.length,
-                            itemBuilder: (context, index) {
-                              final camera = filteredCameras[index];
-                              final isActive = camera.status == "Active";
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                        color: Colors.white.withOpacity(0.05)),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        camera.id,
-                                        style: const TextStyle(color: Colors.white70),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        camera.location,
-                                        style: const TextStyle(color: Colors.white70),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        camera.status,
-                                        style: TextStyle(
-                                          color: isActive
-                                              ? const Color(0xFF3DC9FF)
-                                              : const Color(0xFFFF9900),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        _formatDateTime(camera.lastUpdated),
-                                        style: const TextStyle(color: Colors.white70),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(
-                                              isActive ? Icons.pause : Icons.play_arrow,
-                                              color: Colors.white70,
-                                              size: 20,
-                                            ),
-                                            onPressed: () => _toggleCameraStatus(camera),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.settings,
-                                              color: Colors.white70,
-                                              size: 20,
-                                            ),
-                                            onPressed: () => _showCameraSettings(camera),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                        : // === Ganti bagian ListView.builder di CCTVManagementPage ===
+ListView.builder(
+  itemCount: filteredCameras.length,
+  itemBuilder: (context, index) {
+    final camera = filteredCameras[index];
+    final isActive = camera.status == "Active";
+
+    return GestureDetector(
+      onTap: () => _showCameraActions(camera), // 👈 pop up ketika ditekan
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(flex: 2, child: Text(camera.id, style: const TextStyle(color: Colors.white70))),
+            Expanded(flex: 3, child: Text(camera.location, style: const TextStyle(color: Colors.white70))),
+            Expanded(
+              flex: 2,
+              child: Text(
+                camera.status,
+                style: TextStyle(
+                  color: isActive ? const Color(0xFF3DC9FF) : const Color(0xFFFF9900),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(flex: 3, child: Text(_formatDateTime(camera.lastUpdated), style: const TextStyle(color: Colors.white70))),
+          ],
+        ),
+      ),
+    );
+  },
+),
+
               ),
             ),
           ],
