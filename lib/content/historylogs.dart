@@ -79,14 +79,22 @@ class _HistoryLogsPageState extends State<HistoryLogsPage> {
             // ==== HEADER BAR ====
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF3A8DFF), Color(0xFF2BC0E4)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                  colors: [Color(0xFF0A0A2A), Color(0xFF131347)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,16 +102,16 @@ class _HistoryLogsPageState extends State<HistoryLogsPage> {
                   Text(
                     "Founded Logs",
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 4),
                   Text(
                     "Detected missing people on available cameras will automatically recorded as logs here",
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       color: Colors.white70,
                     ),
                   ),

@@ -299,46 +299,50 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1735),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF0A0A2A), Color(0xFF131347)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Dashboard",
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: Colors.lightBlue[100],
-            ),
-          ),
-          Text(
-            "Obserra",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: Colors.lightBlue[100],
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 4),
           RichText(
-            text: TextSpan(
+            text: const TextSpan(
               children: [
-                const TextSpan(
+                TextSpan(
                   text: "One Trace, ",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.lightBlue,
+                    color: Colors.white70,
+                    fontSize: 16,
                   ),
                 ),
                 TextSpan(
                   text: "One Hope.",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.blue[300],
+                    color: Color(0xFF57E6FF),
+                    fontSize: 16,
                   ),
                 ),
               ],
