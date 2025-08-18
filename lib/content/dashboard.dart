@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lolos/content/cctvmanagement.dart';
+import 'package:lolos/content/missingpeople.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -418,7 +419,7 @@ class DashboardStats extends StatelessWidget {
   text: "View Reported Missing Person",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
-      builder: (context) => ManageRequestsPage(),
+      builder: (context) => MissingPeoplePage(),
     ));
   },
 ),
