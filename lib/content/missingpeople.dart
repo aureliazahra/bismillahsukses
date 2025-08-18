@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lolos/content/addnewmissingperson.dart';
 import 'package:lolos/content/missing_person_dialog.dart'; // pastikan file ini ada
@@ -213,7 +214,14 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
                               child: (person["photo"] ?? "").isEmpty
                                   ? const Icon(Icons.person,
                                       color: Colors.white70, size: 20)
-                                  : Image.network(person["photo"]!),
+                                  : Image.file(
+                                      File(person["photo"]!),
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return const Icon(Icons.person,
+                                            color: Colors.white70, size: 20);
+                                      },
+                                    ),
                             ),
                           ),
                           Expanded(
