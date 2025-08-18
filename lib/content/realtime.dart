@@ -26,25 +26,33 @@ class RealTimeDetectionPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF4AB1EB), Color(0xFF2D6AA6)],
+                  colors: [Color(0xFF0A0A2A), Color(0xFF131347)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: const [
                   Text(
-                    "Real-Time\nDetection",
+                    "Real-Time Detection",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 32,
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                     ),
                   ),
-                  SizedBox(height: 6),
+                  SizedBox(height: 4),
                   Text(
                     "Available cameras with real-time face detection",
                     style: TextStyle(

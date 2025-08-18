@@ -67,14 +67,22 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
             // ==== HEADER BAR ====
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF3A8DFF), Color(0xFF2BC0E4)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                  colors: [Color(0xFF0A0A2A), Color(0xFF131347)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,12 +90,12 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
                   const Text(
                     "Missing People",
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 4),
                   const Text(
                     "Manage missing people",
                     style: TextStyle(
