@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart';
 
 
 class AddMissingPersonDialog extends StatefulWidget {
-  final Function(Map<String, dynamic>) onCameraAdded;
+  final Function(Map<String, dynamic>) onPersonAdded;
 
-  const AddMissingPersonDialog({super.key, required this.onCameraAdded});
+  const AddMissingPersonDialog({super.key, required this.onPersonAdded});
 
   @override
   _AddMissingPersonDialogState createState() => _AddMissingPersonDialogState();
@@ -123,7 +123,7 @@ class _AddMissingPersonDialogState extends State<AddMissingPersonDialog> {
                         "result": resultController.text,
                         "image": _imageFile?.path ?? "",
                       };
-                      widget.onCameraAdded(data);
+                      widget.onPersonAdded(data);
                       Navigator.pop(context);
                     },
                     child: const Text("Save Information"),
