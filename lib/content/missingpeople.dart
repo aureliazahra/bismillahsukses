@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lolos/content/addnewmissingperson.dart';
 
 class MissingPeoplePage extends StatefulWidget {
   const MissingPeoplePage({super.key});
@@ -7,8 +8,9 @@ class MissingPeoplePage extends StatefulWidget {
   State<MissingPeoplePage> createState() => _MissingPeoplePageState();
 }
 
+
 class _MissingPeoplePageState extends State<MissingPeoplePage> {
-  List<Map<String, String>> missingPeople = [
+  List<Map<String, dynamic>> missingPeople = [
     {
       "reportedTime": "2025-08-12",
       "photo": "",
@@ -97,25 +99,43 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
                   // Tombol pill
                   Container(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
-                      ),
                       borderRadius: BorderRadius.circular(30),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF3A5BFF), Color(0xFF192BC2)],
+                      ),
                     ),
-                    child: ElevatedButton(
+                    child: ElevatedButton.icon(
+                    onPressed: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AddMissingPersonDialog(
+          onCameraAdded: (data) {
+            // Data yang disimpan di sini bisa kamu masukkan ke list
+            setState(() {
+              missingPeople.add(data);
+            });
+          },
+        );
+      },
+    );
+  },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
                       ),
-                      onPressed: () {},
-                      child: const Text(
-                        "Add New Missing Person",
-                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      icon: const Icon(Icons.add, size: 18, color: Colors.white),
+                      label: const Text(
+                        "Add New Missing People",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                     ),
                   ),
