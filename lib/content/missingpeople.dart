@@ -8,24 +8,23 @@ class MissingPeoplePage extends StatefulWidget {
 }
 
 class _MissingPeoplePageState extends State<MissingPeoplePage> {
-  // Contoh data awal (nanti bisa diganti dari API/database)
   List<Map<String, String>> missingPeople = [
     {
       "reportedTime": "2025-08-12",
-      "photo": "", // path atau URL foto
-      "name": "Rudy",
+      "photo": "",
+      "name": "Budy",
       "result": "Not yet found"
     },
     {
       "reportedTime": "2025-08-12",
       "photo": "",
       "name": "Sity",
-      "result": "Not yet found"
+      "result": "Npt yet founf"
     },
     {
       "reportedTime": "2025-08-12",
       "photo": "",
-      "name": "Rudy",
+      "name": "RUdy",
       "result": "Founded"
     },
     {
@@ -43,7 +42,7 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
     {
       "reportedTime": "2025-08-12",
       "photo": "",
-      "name": "Dody",
+      "name": "Dedy",
       "result": "Founded"
     },
     {
@@ -63,142 +62,157 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search Bar & Notification Icon
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white10,
-                      hintText: "Search",
-                      hintStyle: const TextStyle(color: Colors.white54),
-                      prefixIcon: const Icon(Icons.search, color: Colors.white54),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
+            // ==== HEADER BAR ====
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF3A8DFF), Color(0xFF2BC0E4)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Missing People",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    "Manage missing people",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  // Tombol pill
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1E3C72), Color(0xFF2A5298)],
+                      ),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        "Add New Missing Person",
+                        style: TextStyle(fontSize: 14, color: Colors.white),
                       ),
                     ),
-                    style: const TextStyle(color: Colors.white),
                   ),
-                ),
-                const SizedBox(width: 15),
-                IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
-                  onPressed: () {},
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
-            // Title & Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Missing People",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    // Tambah data baru
-                  },
-                  child: const Text("Add New Missing Person"),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "Manage missing people",
-              style: TextStyle(color: Colors.white54),
-            ),
-            const SizedBox(height: 20),
-
-            // Table Header
+            // ==== TABLE HEADER ====
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
-                color: Colors.blue.shade900,
-                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFF1A237E),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
               ),
               child: Row(
                 children: const [
                   Expanded(
                       flex: 2,
                       child: Text("Reported Time",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 1,
-                      child:
-                          Text("Photo", style: TextStyle(color: Colors.white))),
+                      child: Text("Photo",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 2,
                       child: Text("Person Name",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 2,
-                      child:
-                          Text("Result", style: TextStyle(color: Colors.white))),
+                      child: Text("Result",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                 ],
               ),
             ),
 
-            // List Data
+            // ==== LIST DATA ====
             Expanded(
               child: ListView.builder(
                 itemCount: missingPeople.length,
                 itemBuilder: (context, index) {
                   final person = missingPeople[index];
                   return Container(
-                    margin: const EdgeInsets.only(top: 5),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade800,
-                      borderRadius: BorderRadius.circular(10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF283593),
+                      border: Border(
+                        bottom: BorderSide(color: Colors.white24, width: 0.5),
+                      ),
                     ),
                     child: Row(
                       children: [
                         Expanded(
                           flex: 2,
                           child: Text(person["reportedTime"] ?? "",
-                              style: const TextStyle(color: Colors.white)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14)),
                         ),
                         Expanded(
                           flex: 1,
                           child: Container(
-                            width: 40,
-                            height: 40,
+                            width: 35,
+                            height: 35,
                             decoration: BoxDecoration(
                               color: Colors.white24,
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             child: person["photo"]!.isEmpty
                                 ? const Icon(Icons.person,
-                                    color: Colors.white70)
+                                    color: Colors.white70, size: 20)
                                 : Image.network(person["photo"]!),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(person["name"] ?? "",
-                              style: const TextStyle(color: Colors.white)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14)),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(person["result"] ?? "",
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 14)),
+                                  color: Colors.white70, fontSize: 14)),
                         ),
                       ],
                     ),

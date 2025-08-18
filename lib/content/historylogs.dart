@@ -72,100 +72,105 @@ class _HistoryLogsPageState extends State<HistoryLogsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF0B1220),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar
+            // ==== HEADER BAR ====
             Container(
-              height: 45,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFF111A2E),
-                borderRadius: BorderRadius.circular(12),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF3A8DFF), Color(0xFF2BC0E4)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: const Row(
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.search, color: Colors.white70),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                      ),
+                  Text(
+                    "Founded Logs",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                  )
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    "Detected missing people on available cameras will automatically recorded as logs here",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.white70,
+                    ),
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
 
-            // Title
-            const Text(
-              "Founded Logs",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold, 
-              ),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              "Detected missing people on available cameras will automatically recorded as logs here",
-              style: TextStyle(color: Colors.white54, fontSize: 14),
-            ),
-            const SizedBox(height: 20),
-
-            // Table header
+            // ==== TABLE HEADER ====
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF111A2E),
-                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xFF1A237E),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
               ),
               child: Row(
                 children: const [
                   Expanded(
                       flex: 2,
                       child: Text("Date",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 2,
                       child: Text("Time",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 3,
                       child: Text("Camera",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 2,
                       child: Text("Person Name",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                   Expanded(
                       flex: 2,
                       child: Text("Match Score",
-                          style: TextStyle(color: Colors.white))),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold))),
                 ],
               ),
             ),
 
-            // Table rows
+            // ==== TABLE ROWS ====
             Expanded(
               child: ListView.builder(
                 itemCount: logs.length,
                 itemBuilder: (context, index) {
                   final log = logs[index];
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0E1A36),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF283593),
                       border: Border(
-                        bottom: BorderSide(
-                            color: Colors.white.withOpacity(0.05), width: 1),
+                        bottom: BorderSide(color: Colors.white24, width: 0.5),
                       ),
                     ),
                     child: Row(
@@ -173,23 +178,28 @@ class _HistoryLogsPageState extends State<HistoryLogsPage> {
                         Expanded(
                             flex: 2,
                             child: Text(log["date"],
-                                style: const TextStyle(color: Colors.white))),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 14))),
                         Expanded(
                             flex: 2,
                             child: Text(log["time"],
-                                style: const TextStyle(color: Colors.white))),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 14))),
                         Expanded(
                             flex: 3,
                             child: Text(log["camera"],
-                                style: const TextStyle(color: Colors.white))),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 14))),
                         Expanded(
                             flex: 2,
                             child: Text(log["person"],
-                                style: const TextStyle(color: Colors.white))),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 14))),
                         Expanded(
                             flex: 2,
                             child: Text(log["score"].toStringAsFixed(2),
-                                style: const TextStyle(color: Colors.white))),
+                                style: const TextStyle(
+                                    color: Colors.white70, fontSize: 14))),
                       ],
                     ),
                   );
