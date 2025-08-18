@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lolos/content/addnewmissingperson.dart';
-import 'package:lolos/content/missing_person_dialog.dart'; // pastikan ini di-import
+import 'package:lolos/content/missing_person_dialog.dart'; // pastikan file ini ada
 
 class MissingPeoplePage extends StatefulWidget {
   const MissingPeoplePage({super.key});
@@ -66,14 +66,19 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Missing People",
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                  const SizedBox(height: 5),z
-                  const Text("Manage missing people",
-                      style: TextStyle(fontSize: 16, color: Colors.white70)),
+                  const Text(
+                    "Missing People",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    "Manage missing people",
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
                   const SizedBox(height: 15),
                   Container(
                     decoration: BoxDecoration(
@@ -108,11 +113,14 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
                       ),
                       icon: const Icon(Icons.add,
                           size: 18, color: Colors.white),
-                      label: const Text("Add New Missing People",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
+                      label: const Text(
+                        "Add New Missing People",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -124,9 +132,9 @@ class _MissingPeoplePageState extends State<MissingPeoplePage> {
             Container(
               padding:
                   const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1A237E),
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Color(0xFF1A237E),
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
