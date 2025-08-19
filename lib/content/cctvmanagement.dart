@@ -91,30 +91,119 @@ void _showCameraActions(CameraData camera) {
       // Sekarang jangan langsung hapus, tapi panggil confirm dialog
       Navigator.pop(context); 
 showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Confirm Delete"),
-        content: Text("Are you sure you want to delete this camera?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Tutup konfirmasi
-            },
-            child: Text("Cancel"),
+  context: context,
+  barrierDismissible: false,
+  builder: (BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(32),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0B0F3F), // dark blue
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.blueAccent.withOpacity(0.6),
+            width: 1.5,
           ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: logika delete download di sini
-             _deleteCamera(camera.id);
-              Navigator.of(context).pop(); // Tutup konfirmasi
-            },
-            child: Text("Delete"),
-          ),
-        ],
-      );
-    },
-  );
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blueAccent.withOpacity(0.4),
+              blurRadius: 20,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Judul
+            Text(
+              "Delete Missing Person",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                foreground: Paint()
+                  ..shader = const LinearGradient(
+                    colors: <Color>[
+                      Color(0xFF3EC9F8),
+                      Color(0xFF00AEEF),
+                    ],
+                  ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+
+            // Deskripsi
+            const Text(
+              "Are you sure you wanna delete this reported missing person?",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+
+            // Tombol
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Cancel button
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E2A78),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Submit button
+                ElevatedButton(
+                  onPressed: () {
+                    _deleteCamera(camera.id);
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00AEEF),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  },
+);
+
     },
   ),
             ListTile(
@@ -303,25 +392,9 @@ showDialog(
                     ],
                   ),
                   const SizedBox(height: 4),
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "One Trace, ",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "One Hope.",
-                          style: TextStyle(
-                            color: Color(0xFF57E6FF),
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
+                  const Text(
+                    "Manage all cameras which has connected to systempop uo delee dan ",
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 16),
                   // Button Add New Camera
