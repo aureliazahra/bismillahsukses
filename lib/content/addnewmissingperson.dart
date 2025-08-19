@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class AddMissingPersonDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onPersonAdded;
 
@@ -19,7 +18,8 @@ class _AddMissingPersonDialogState extends State<AddMissingPersonDialog> {
   File? _imageFile;
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -45,7 +45,7 @@ class _AddMissingPersonDialogState extends State<AddMissingPersonDialog> {
         ),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
@@ -58,37 +58,45 @@ class _AddMissingPersonDialogState extends State<AddMissingPersonDialog> {
               ),
               const SizedBox(height: 20),
 
-              // Upload picture box
+              // Upload picture square box (centered)
               GestureDetector(
                 onTap: _pickImage,
-                child: Container(
-                  height: 150,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1A1F3C),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: _imageFile == null
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.cloud_upload, color: Colors.lightBlueAccent, size: 40),
-                              SizedBox(height: 10),
-                              Text(
-                                "Upload or Drag Picture Here",
-                                style: TextStyle(color: Colors.lightBlueAccent),
-                              )
-                            ],
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _imageFile!,
-                            fit: BoxFit.cover,
-                          ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.cyanAccent.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.cyanAccent, width: 2),
+                      ),
+                      child: _imageFile != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.file(
+                                _imageFile!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : const Center(
+                              child: Icon(
+                                Icons.person,
+                                size: 80,
+                                color: Colors.white,
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (_imageFile == null)
+                      const Text(
+                        "Tap to upload photo",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
                         ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
