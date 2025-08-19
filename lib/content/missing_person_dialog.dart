@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class MissingPersonDetailDialog extends StatelessWidget {
@@ -31,10 +32,22 @@ class MissingPersonDetailDialog extends StatelessWidget {
             Container(
               width: 150,
               height: 150,
-              color: Colors.cyanAccent,
-              child: data["photo"] != null
-                  ? Image.file(data["photo"], fit: BoxFit.cover)
-                  : Icon(Icons.person, size: 80, color: Colors.white),
+              decoration: BoxDecoration(
+                color: Colors.cyanAccent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: data["photo"] != null && data["photo"].toString().isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(data["photo"]),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.person, size: 80, color: Colors.white);
+                        },
+                      ),
+                    )
+                  : const Icon(Icons.person, size: 80, color: Colors.white),
             ),
 
             const SizedBox(height: 16),

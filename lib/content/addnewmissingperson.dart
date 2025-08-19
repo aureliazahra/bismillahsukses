@@ -129,7 +129,8 @@ class _AddMissingPersonDialogState extends State<AddMissingPersonDialog> {
                         "name": nameController.text,
                         "info": infoController.text,
                         "result": resultController.text,
-                        "image": _imageFile?.path ?? "",
+                        "photo": _imageFile?.path ?? "",
+                        "reportedTime": DateTime.now().toString().split(' ')[0], // Add current date
                       };
                       widget.onPersonAdded(data);
                       Navigator.pop(context);
