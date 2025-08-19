@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lolos/content/cctvmanagement.dart';
 import 'package:lolos/content/missingpeople.dart';
+import 'package:lolos/content/notification.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -638,16 +639,7 @@ class DetectionLogsPage extends StatelessWidget {
   }
 }
 
-class NotificationsPage extends StatelessWidget {
-  const NotificationsPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Notifications")),
-      body: const Center(child: Text("Notifications Page")),
-    );
-  }
-}
+
 
 // =================== Gradient Button ===================
 class GradientPillButton extends StatelessWidget {

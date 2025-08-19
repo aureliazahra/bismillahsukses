@@ -95,7 +95,7 @@ showDialog(
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text("Confirm Delete"),
-        content: Text("Are you sure you want to delete this download?"),
+        content: Text("Are you sure you want to delete this camera?"),
         actions: [
           TextButton(
             onPressed: () {
