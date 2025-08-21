@@ -1,0 +1,26 @@
+{
+  "device": "CPU",
+  "debug": false,
+  "detector_backend": "insightface",
+  "antispoof_backend": "heuristic_high",
+  "antispoof_model_path": "models/antispoof/minifasnet/minifasnet.onnx",
+  "match_threshold": 0.6,
+  "red_cutoff_threshold": 0.4,
+  "require_human_check": true,
+  "box_thickness_max": 2,
+  "save_mode": "photo",
+  "save_which": "green",
+  "log_interval_seconds": 3,
+  "antispoof_preprocess": "bgr_norm",
+  "antispoof_live_index": 2,
+  "antispoof_mode": "high",
+  "antispoof_thresholds": {
+    "low": 0.4,
+    "medium": 0.55,
+    "high": 0.7
+  },
+  "antispoof_smooth_k": 3,
+  "min_live_face_size": 90,
+  "min_interocular_px": 38,
+  "suppress_small_faces_when_antispoof": true
+}
