@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Kamera CCTV 1",
+    "source": 1,
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  },
+  {
+    "name": "IP Kamera Luar",
+    "source": "rtsp://aatc:ke67bu@192.168.0.239:554/stream1",
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  },
+  {
+    "name": "IP Kamera Dalam",
+    "source": "rtsp://admin:admin@192.168.0.241:554/stream1",
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  },
+  {
+    "name": "Kamera Alun-Alun Batu",
+    "source": "https://stream.batukota.go.id/WebRTCApp/streams/c4umuPuVX9rYo8pJ1705741554912.m3u8",
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  },
+  {
+    "name": "Kamera Retawu",
+    "source": "http://stream.cctv.malangkota.go.id/WebRTCApp/streams/996051630808365936867998.m3u8",
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  },
+  {
+    "name": "Kamera Simpang Gajayana",
+    "source": "http://stream.cctv.malangkota.go.id/WebRTCApp/streams/715337494726392556880466.m3u8",
+    "display_interval_ms": 50,
+    "detect_interval_frames": 3,
+    "reconnect_delay": 10,
+    "frame_buffer": 1,
+    "exposure_enabled": true,
+    "exposure_gain": 1.4,
+    "min_luminance": 55
+  }
+]
