@@ -1,9 +1,0 @@
-@echo off
-echo Starting Obserra CCTV Backend...
-echo.
-echo Installing dependencies...
-pip install -r requirements.txt
-echo.
-echo Starting API server...
-python simple_api.py
-pause

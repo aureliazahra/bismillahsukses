@@ -4,14 +4,14 @@ class Sidebar extends StatelessWidget {
   final int selectedPage;
   final List<String> menuItems;
   final Function(int) onMenuTap;
-  final VoidCallback onLogout; // tambahkan ini
+  final VoidCallback onLogout;
 
   const Sidebar({
     super.key,
     required this.selectedPage,
     required this.menuItems,
     required this.onMenuTap,
-    required this.onLogout, // wajib diisi
+    required this.onLogout,
   });
 
   IconData _getIconForMenu(String title) {
@@ -20,12 +20,12 @@ class Sidebar extends StatelessWidget {
         return Icons.dashboard;
       case "CCTV Management":
         return Icons.videocam;
-      case "Real-Time Face":
+      case "Real Time Face Detection":
         return Icons.face;
-      case "Reports":
+      case "History Logs":
         return Icons.description;
-      case "Admin Management":
-        return Icons.admin_panel_settings;
+      case "Missing People":
+        return Icons.sentiment_satisfied_alt;
       case "Settings":
         return Icons.settings;
       default:
@@ -65,11 +65,14 @@ class Sidebar extends StatelessWidget {
                       size: 20,
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      menuItems[i],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
+                    Expanded(
+                      child: Text(
+                        menuItems[i],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis, // biar mirip gambar
                       ),
                     ),
                   ],
@@ -77,7 +80,6 @@ class Sidebar extends StatelessWidget {
               ),
             ),
           const Spacer(),
-          // Tombol Logout
           InkWell(
             onTap: onLogout,
             child: Container(

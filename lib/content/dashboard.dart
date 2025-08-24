@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lolos/content/cctvmanagement.dart';
+import 'package:lolos/content/missingpeople.dart';
+import 'package:lolos/content/notification.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -16,9 +18,9 @@ class _DashboardPageState extends State<DashboardPage> {
   int onProgress = 4; 
   int activeCameras = 18;
   int totalCameras = 20;
-  int matchedToday = 3;
-  int matchedWeek = 14;
-  int matchedMonth = 25;
+  int detectionsToday = 3;
+  int possibleMatches = 14;
+  int confirmedMissing = 25;
 
   // Sidebar menu
   final List<String> menuItems = [
@@ -43,41 +45,17 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: const Color(0xFF0B1220),
       body: Row(
         children: [
-          // // ===================== SIDEBAR =====================
-          // Container(
-          //   width: 250,
-          //   color: const Color(0xFF111A2E),
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       const SizedBox(height: 20),
-          //       Center(
-          //         child: Image.asset(
-          //           'assets/images/obserra.png',
-          //           width: 140,
-          //         ),
-          //       ),
-          //       const SizedBox(height: 30),
-          //       for (int i = 0; i < menuItems.length; i++)
-          //         _buildSidebarItem(
-          //           _getIconForMenu(menuItems[i]),
-          //           menuItems[i],
-          //           isActive: selectedPage == i,
-          //           onTap: () {
-          //             setState(() => selectedPage = i);
-          //           },
-          //         ),
-          //       const Spacer(),
-          //       const SizedBox(height: 20),
-          //     ],
-          //   ),
-          // ),
+          
 
           // ===================== MAIN CONTENT =====================
+          
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
+              child: Expanded(
+  child: SingleChildScrollView(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
                 children: [
                   // === TOP BAR ===
                   Row(
@@ -187,44 +165,58 @@ class _DashboardPageState extends State<DashboardPage> {
 
                   // === MATCHES FACE DETECTED ===
                   Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0E1B35),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Matches Face Detected",
-                          style: TextStyle(color: Colors.white, fontSize: 14),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildStatBox(
-                                matchedToday.toString(), "Matched Faces Today"),
-                            _buildStatBox(matchedWeek.toString(),
-                                "Matched Faces This Week"),
-                            _buildStatBox(matchedMonth.toString(),
-                                "Matched Faces This Month"),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        GestureDetector(
-                          onTap: () => _navigateTo(const DetectionLogsPage()),
-                          child: _buildBlueButton("View Detection Logs"),
-                        ),
-                      ],
-                    ),
+  margin: const EdgeInsets.all(16),
+  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+  decoration: BoxDecoration(
+    color: const Color(0xFF1A1B3A),
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Face Recognition Summary",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
+  
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildSummaryStat(
+        value: detectionsToday.toString(),
+        label: "Detections\nToday",
+      ),
+      _buildSummaryStat(
+        value: possibleMatches.toString(),
+        label: "Possible\nMatches",
+      ),
+      _buildSummaryStat(
+        value: confirmedMissing.toString(),
+        label: "Confirmed\nMissing\nPerson",
+      ),
+    ],
+  ),
+            ],
+),
                   ),
+
                 ],
               ),
+            ),
+          ),
             ),
           ),
         ],
       ),
     );
+    
+    
   }
 
   IconData _getIconForMenu(String title) {
@@ -308,46 +300,50 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1735),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF0A0A2A), Color(0xFF131347)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Dashboard",
             style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: Colors.lightBlue[100],
-            ),
-          ),
-          Text(
-            "Obserra",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: Colors.lightBlue[100],
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 4),
           RichText(
-            text: TextSpan(
+            text: const TextSpan(
               children: [
-                const TextSpan(
+                TextSpan(
                   text: "One Trace, ",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.lightBlue,
+                    color: Colors.white70,
+                    fontSize: 16,
                   ),
                 ),
                 TextSpan(
                   text: "One Hope.",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.blue[300],
+                    color: Color(0xFF57E6FF),
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -401,11 +397,11 @@ class DashboardStats extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "User Requests Awaiting Response",
+                    "Reported Missing Person",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -413,11 +409,11 @@ class DashboardStats extends StatelessWidget {
                     children: [
                       Expanded(
                           child: _statusBox(
-                              unprocessedRequests.toString(), "Unprocessed Requests")),
+                              unprocessedRequests.toString(), "Not yet founded")),
                       const SizedBox(width: 12),
                       Expanded(
                           child: _statusBox(
-                              onProgress.toString(), "On Progress")),
+                              onProgress.toString(), "Founded")),
                     ],
                   ),
                   const Spacer(),
@@ -425,10 +421,10 @@ class DashboardStats extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child:GradientPillButton(
-  text: "Manage Requests",
+  text: "View Reported Missing Person",
   onPressed: () {
     Navigator.push(context, MaterialPageRoute(
-      builder: (context) => ManageRequestsPage(),
+      builder: (context) => MissingPeoplePage(),
     ));
   },
 ),
@@ -466,7 +462,7 @@ Expanded(
         const Text(
           "Total Active Cameras",
           style: TextStyle(
-            color: Colors.white70,
+            color: Colors.white,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
@@ -643,16 +639,7 @@ class DetectionLogsPage extends StatelessWidget {
   }
 }
 
-class NotificationsPage extends StatelessWidget {
-  const NotificationsPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Notifications")),
-      body: const Center(child: Text("Notifications Page")),
-    );
-  }
-}
+
 
 // =================== Gradient Button ===================
 class GradientPillButton extends StatelessWidget {
@@ -704,3 +691,43 @@ class GradientPillButton extends StatelessWidget {
   }
 }
 
+
+Widget _buildSummaryStat({required String value, required String label}) {
+  final lines = label.split("\n"); // biar gampang bikin 2-3 baris
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.end, // teks sejajar bawah angka
+    children: [
+      ShaderMask(
+        shaderCallback: (bounds) => const LinearGradient(
+          colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ).createShader(bounds),
+        child: Text(
+          value,
+          style: const TextStyle(
+            fontSize: 42,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      const SizedBox(width: 6),
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: lines.map((line) {
+          return Text(
+            line,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.2,
+            ),
+          );
+        }).toList(),
+      ),
+    ],
+  );
+}

@@ -1,0 +1,54 @@
+:root {
+  /* Font */
+  --font-sans: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* Core colors (disetel untuk match gambar) */
+  --bg: #0b0f1e;               /* latar gelap */
+  --bg-2: #0e1733;             /* gelap sekunder */
+  --panel: rgba(20, 28, 56, .55);
+  --panel-strong: rgba(13, 20, 45, .75);
+
+  --text: #d8e6ff;
+  --muted: #9bb3d2;
+
+  /* Accent blues & cyans */
+  --blue-1: #4cc3ff;
+  --blue-2: #2e86ff;
+  --blue-3: #223bcb;
+  --cyan-1: #7be9ff;
+  --cyan-2: #39d3ff;
+  --teal-1: #59ffe9;
+
+  /* Status */
+  --success: #28f59a;
+  --warning: #ffd166;
+  --danger: #ff4d6d;
+
+  /* Gradients */
+  --grad-sidebar: linear-gradient(180deg, #131a3a 0%, #231d3e 100%);
+  --grad-header: linear-gradient(135deg, #63def3 0%, #3aa2ee 45%, #2447c2 100%);
+  --grad-surface: linear-gradient(180deg, rgba(74,93,169,.50) 0%, rgba(21,28,62,.60) 100%);
+  --grad-button: linear-gradient(180deg, #64dbff 0%, #2b74f0 100%);
+  --grad-button-strong: linear-gradient(180deg, #59d8ff 0%, #2a6dea 80%);
+  --grad-button-red: linear-gradient(180deg, #ff6a6a 0%, #c51e2e 100%);
+  --grad-active: linear-gradient(180deg, #66deff 0%, #3178f4 100%);
+  --grad-table: linear-gradient(180deg, rgba(46,32,163,.55) 0%, rgba(18,22,70,.75) 100%);
+
+  /* Shadows */
+  --shadow-lg: 0 18px 40px rgba(5, 10, 25, .55);
+  --shadow-md: 0 10px 24px rgba(5, 10, 25, .45);
+  --inner-glow: inset 0 1px 0 rgba(255,255,255,.08);
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+  --r-xxl: 34px;
+
+  /* Sizes */
+  --sidebar-w: 260px;
+
+  /* Effects */
+  --glass: backdrop-filter: blur(10px);
+}

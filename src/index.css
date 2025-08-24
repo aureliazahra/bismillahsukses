@@ -1,0 +1,12 @@
+/* Reset & global */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: var(--bg);
+  overflow: hidden; /* scroll di area konten saja */
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }

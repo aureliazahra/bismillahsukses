@@ -1,0 +1,341 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* --- Gaya Tambahan untuk Komponen MissingPeople.jsx --- */
+
+/* Grid utama */
+.missing-people-grid {
+  display: grid;
+  gap: 18px;
+}
+
+/* Header Card */
+.header-card {
+  border-radius: 26px;
+  border-top-right-radius: 34px;
+  min-height: 90px;
+  padding: 26px 32px;
+  background: #5cc6e04a;
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 6px 16px rgba(7,12,32,.28);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-weight: 800;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: #C2E9FF;
+  letter-spacing: .2px;
+  display: block;
+}
+
+.header-subtitle {
+  font-weight: 400;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #D9FFFE 2%, #5FE6E2 29%, #5FE6E2 66%, #1292FE 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: block;
+  margin-bottom: 18px;
+}
+
+.header-button-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.add-person-btn {
+  min-width: 220px;
+  height: 38px;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 999px; /* corrected px */
+  background: linear-gradient(90deg, #1797FF 0%, #0E004D 100%);
+  border: 1px solid rgba(95, 217, 255, .45);
+  box-shadow: 0 12px 24px rgba(25, 86, 220, .18), inset 0 1px 0 rgba(255,255,255,.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 0 24px;
+}
+
+.add-person-btn svg circle {
+  fill: #fff;
+  fill-opacity: 0.18;
+}
+
+.add-person-btn svg path {
+  stroke: #fff;
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+
+
+/* Table Section */
+.table-wrapper {
+  border-radius: 22px;
+  margin-top: 0;
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.missing-people-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #fff; /* Default text color for table content */
+}
+
+.missing-people-table thead th {
+  padding: 12px 16px;
+  background-color: rgba(10,16,45,.5);
+  font-weight: 600;
+}
+
+.missing-people-table thead th:nth-child(1) { width: 20%; text-align: left; } /* Reported Time */
+.missing-people-table thead th:nth-child(2) { width: 15%; text-align: center; } /* Photo */
+.missing-people-table thead th:nth-child(3) { width: 35%; text-align: left; } /* Person Name */
+.missing-people-table thead th:nth-child(4) { width: 30%; text-align: center; } /* Result */
+
+
+.missing-people-table tbody tr {
+  border-top: 1px solid rgba(255,255,255,.06);
+  cursor: pointer;
+}
+
+.missing-people-table tbody td {
+  padding: 12px 16px;
+}
+
+.missing-people-table .reported-time-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.missing-people-table .reported-time-cell .time-text {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.missing-people-table .photo-cell {
+  text-align: center;
+}
+
+.missing-people-table .photo-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #eaeaea;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.missing-people-table .result-cell {
+  text-align: center;
+  font-weight: 700;
+  /* color is dynamic, remains inline */
+}
+
+
+/* Modal/Pop-up Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 820px;
+  border-radius: 18px;
+  border: 2px solid #35e0ff;
+  padding: 36px;
+  background: linear-gradient(130deg, rgba(9,14,44,.9) 0%, rgba(17,0,60,.9) 100%);
+  color: #fff;
+  box-shadow: 0 25px 60px rgba(0,0,0,.45);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-title-heading {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.modal-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.modal-image-placeholder {
+  flex: 0 0 260px;
+  height: 260px;
+  background: #22e3ff;
+  border-radius: 6px;
+}
+
+.modal-details-grid {
+  flex: 1;
+  min-width: 240px;
+  display: grid;
+  gap: 16px;
+}
+
+.modal-label {
+  font-size: 14px;
+  opacity: 0.8;
+  display: block;
+}
+
+.modal-field-display,
+.modal-input-field,
+.modal-select-field {
+  margin-top: 4px;
+  width: 100%;
+  padding: 10px 14px;
+  background: #050509;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.modal-field-display {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.modal-select-field {
+  font-weight: 700; /* color is dynamic, remains inline */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.modal-select-field option {
+  background: #050509;
+  /* color is dynamic, remains inline */
+}
+
+.modal-reported-time-text {
+  font-size: 13px;
+  margin-top: 28px;
+  opacity: 0.7;
+}
+
+.modal-actions-container {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  flex: 0 0 auto;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 16px; /* Ensure sufficient padding */
+}
+
+.action-button.primary {
+  background: linear-gradient(90deg,#0d91ff,#1797ff);
+}
+
+.action-button.secondary {
+  background: rgba(255,255,255,.15);
+}
+
+.action-button.danger {
+  background: rgba(255,0,0,.75);
+}
+
+/* Specific button widths if absolutely needed, otherwise let content define */
+.action-button.edit-info,
+.action-button.apply-changes,
+.action-button.cancel-edit {
+  flex-basis: 140px; /* Specific width */
+}
+
+.action-button.delete-person {
+  flex-basis: 160px; /* Specific width */
+}
